@@ -244,11 +244,11 @@ const ITEMS_PER_PAGE = 10;
 onMounted(async () => {
   allUniqueBanks.value = await fetchallUniqueBanks();
   allUniqueAccounts.value = await fetchAllAccounts();
-  await loadLastSearch();
+  await loadLastSearchByTextbox();
+  //TODO: add latest search by columns aswell
 });
 
 // Computed Properties
-
 const allUniqueAccountsComputed = computed(() => {
   if (allUniqueAccounts.value.result) {
     const uniqueNames = [
@@ -348,7 +348,7 @@ const searchClick = async () => {
     await searchByColumns();
   }
 };
-const loadLastSearch = async () => {
+const loadLastSearchByTextbox = async () => {
   if (transactionsStore.lastSearchParams) {
     currentPage.value = transactionsStore.lastSearchParams.lastPageVisited;
     anySearchValue.value = transactionsStore.lastSearchParams.value.toString();
