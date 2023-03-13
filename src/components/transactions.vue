@@ -9,7 +9,12 @@
             <th class="p-4 text-lg font-bold">
               Transactions
               <p class="text-sm">
-                Use the big search textbox or filter by the 3 columns
+                <span class="text-red-500 text-xl"> IMPORTANT! </span>
+                <br />
+                Use the big search textbox
+                <span class="text-red-500 text-xl"> or </span>
+
+                filter by the 3 columns
               </p>
             </th>
             <th class="p-4 text-lg"></th>
@@ -195,10 +200,18 @@
       </div>
     </div>
   </div>
+  <errorModal
+    v-if="showError"
+    @closeClicked="hideErrorModal"
+    :error-data="{
+      title: 'Error',
+      message:
+        'An error ocurred while getting the data. Check the console for more info.',
+    }"></errorModal>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import {
@@ -209,10 +222,10 @@ import {
 } from "@/providers/gqlProvider";
 import type { Transaction } from "@/interfaces/transactions";
 import type { Bank } from "@/interfaces/banks";
-import type { Account } from "@/interfaces/accounts";
 import router from "@/router/index";
 import { RouteNamespace } from "@/namespaces/RouteNamespace";
 import { useTransactionsStore } from "@/stores/transactionsStore";
+import errorModal from "./errorModal.vue";
 
 let anySearchValue = ref("");
 let accountSearchValue = ref<string[]>([]);
@@ -222,6 +235,7 @@ let transactionsForTable = ref([]);
 let allUniqueBanks = ref([]);
 let allUniqueAccounts = ref([]);
 let currentPage = ref(1);
+let showError = ref(false);
 const transactionsStore = useTransactionsStore();
 
 const ITEMS_PER_PAGE = 10;
@@ -232,7 +246,10 @@ onMounted(async () => {
   allUniqueAccounts.value = await fetchAllAccounts();
   await loadLastSearch();
 });
+// Watchers
+
 // Computed Properties
+
 const allUniqueAccountsComputed = computed(() => {
   if (allUniqueAccounts.value.result) {
     const uniqueNames = [
@@ -288,6 +305,23 @@ const transactionsComputed = computed<Transaction[]>(() => {
   return [];
 });
 // Functions
+const hideErrorModal = () => {
+  showError.value = false;
+};
+const watchError = (source) => {
+  return watch(
+    () => source.value?.error,
+    (hasError) => {
+      if (hasError) {
+        showError.value = true;
+        console.error(source.value?.error);
+      }
+    }
+  );
+};
+watchError(allUniqueAccounts);
+watchError(allUniqueBanks);
+watchError(transactionsForTable);
 const getBackgroundColor = (category: Transaction["category"]) => {
   if (category) return `background-color:#${category.color}`;
 };
