@@ -218,9 +218,9 @@ let anySearchValue = ref("");
 let accountSearchValue = ref<string[]>([]);
 let bankSearchValue = ref<string>("");
 let dateSearchValue = ref();
-let transactionsForTable = ref<Transaction[]>([]);
-let allUniqueBanks = ref<Bank[]>([]);
-let allUniqueAccounts = ref<Account[]>([]);
+let transactionsForTable = ref([]);
+let allUniqueBanks = ref([]);
+let allUniqueAccounts = ref([]);
 let currentPage = ref(1);
 const transactionsStore = useTransactionsStore();
 
@@ -251,9 +251,9 @@ const allUniqueAccountsComputed = computed(() => {
 
   return [];
 });
-const allUniqueBanksComputed = computed(() => {
+const allUniqueBanksComputed = computed<Bank[]>(() => {
   if (allUniqueBanks.value.result)
-    return allUniqueBanks.value.result.allUniqueBanks;
+    return allUniqueBanks.value.result.allUniqueBanks as Bank[];
   return [];
 });
 const transactionsLengthComputed = computed(() => {
@@ -274,7 +274,7 @@ const transactionsLengthComputed = computed(() => {
 const isLoading = computed(() => {
   return transactionsForTable.value.loading;
 });
-const transactionsComputed = computed(() => {
+const transactionsComputed = computed<Transaction[]>(() => {
   if (transactionsForTable.value.result) {
     const transactions =
       transactionsForTable?.value?.result?.searchTransactionsByAnyParam
@@ -283,7 +283,7 @@ const transactionsComputed = computed(() => {
         ?.transactions ||
       [];
 
-    return transactions;
+    return transactions as Transaction[];
   }
   return [];
 });

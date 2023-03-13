@@ -1,5 +1,4 @@
 import {
-  GET_TRANSACTIONS,
   GET_ALL_UNIQUE_BANKS,
   GET_ACCOUNTS,
   GET_TRANSACTION_BY_ANY_PARAM,
@@ -27,13 +26,7 @@ const apolloClient = new ApolloClient({
 });
 provideApolloClient(apolloClient);
 
-const fetchTransactions = async (limit: number, offset: number): Promise<any> => {
-    const { result, loading, error } = await useQuery(GET_TRANSACTIONS, {
-      offset,
-      limit,
-    })
-   return {result,loading,error};
-}
+
 const fetchTransactionsByAnyParam = async (search:string,limit: number, offset: number): Promise<any> => {
     const { result, loading, error } = await useQuery(GET_TRANSACTION_BY_ANY_PARAM, {
       search,
@@ -63,4 +56,4 @@ const fetchAllAccounts = async (): Promise<any> => {
  return {result,loading,error};
 }
 
-export {fetchTransactions,fetchallUniqueBanks,fetchAllAccounts,fetchTransactionsByAnyParam,fetchTransactionsByColumns}
+export {fetchallUniqueBanks,fetchAllAccounts,fetchTransactionsByAnyParam,fetchTransactionsByColumns}
