@@ -246,7 +246,6 @@ onMounted(async () => {
   allUniqueAccounts.value = await fetchAllAccounts();
   await loadLastSearch();
 });
-// Watchers
 
 // Computed Properties
 
@@ -304,10 +303,7 @@ const transactionsComputed = computed<Transaction[]>(() => {
   }
   return [];
 });
-// Functions
-const hideErrorModal = () => {
-  showError.value = false;
-};
+// Watchers
 const watchError = (source) => {
   return watch(
     () => source.value?.error,
@@ -322,6 +318,11 @@ const watchError = (source) => {
 watchError(allUniqueAccounts);
 watchError(allUniqueBanks);
 watchError(transactionsForTable);
+// Functions
+const hideErrorModal = () => {
+  showError.value = false;
+};
+
 const getBackgroundColor = (category: Transaction["category"]) => {
   if (category) return `background-color:#${category.color}`;
 };
